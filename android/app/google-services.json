@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1040077295084",
+    "project_id": "busticket-1d772",
+    "storage_bucket": "busticket-1d772.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040077295084:android:aeeca0e95b0f945e59c4c9",
+        "android_client_info": {
+          "package_name": "com.example.busticket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040077295084-m6svibjsklv631i1mmsbkb9iclvchqg9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKt_LLR6WEfumhK_9h4Hn_3K-LH7EepZk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040077295084-m6svibjsklv631i1mmsbkb9iclvchqg9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
