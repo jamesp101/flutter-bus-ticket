@@ -1,3 +1,5 @@
+import 'package:busticket/home/buyticket.dart';
+import 'package:busticket/home/topup.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,7 +24,8 @@ class _DashboardPageState extends State<DashboardPage> {
           controller: _pageController,
           children: [
             Text('hi 1'),
-            Text('hi 2'),
+            BuyTicketPage(),
+            TopupPage(),
             Text('hi 3'),
           ],
         ));
