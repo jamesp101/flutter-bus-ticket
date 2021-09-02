@@ -36,6 +36,8 @@ class _LoginPageState extends State<LoginPage> {
     } on FirebaseAuthException catch (e) {
       print(e);
       EasyLoading.showError(e.message.toString());
+    } catch (e) {
+      EasyLoading.showError('Something went wrong!');
     } finally {
       EasyLoading.dismiss();
     }
@@ -50,6 +52,18 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Spacer(),
+                Text(
+                  'Bus Ticketing',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Login',
+                  style: TextStyle(fontWeight: FontWeight.w300),
+                ),
+                SizedBox(
+                  height: 32,
+                ),
                 TextFormField(
                   controller: emailController,
                   decoration: InputDecoration(
@@ -81,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20)
+                Spacer(),
               ],
             ))));
   }

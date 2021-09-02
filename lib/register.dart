@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,6 +26,18 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
           email: emailController.text, password: confirmController.text);
+
+      print(userCredential);
+
+      final userRef = FirebaseFirestore.instance
+          .collection('users')
+          .withConverter<User>(
+              fromFirestore: (snapshot, _) => User.fromJson(snapshot.data()!),
+              toFirestore: (user, _) => user.toJson());
+
+      await userRef.add(User(
+        email: emailController.text.toString(),
+      ));
       return true;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -126,5 +139,18 @@ class _RegisterPageState extends State<RegisterPage> {
                 ],
               ))),
     );
+  }
+}
+
+class User {
+  User({required this.email, this.coins = 0});
+  String email;
+  num coins;
+
+  User.fromJson(Map<String, Object?> json)
+      : this(email: json['email']! as String, coins: json['coins']! as num);
+
+  Map<String, Object?> toJson() {
+    return {'email': email, 'coins': coins};
   }
 }
