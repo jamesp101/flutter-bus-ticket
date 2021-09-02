@@ -1,0 +1,19 @@
+
+* TODO Scan
+** TODO Change metadata
+https://pub.dev/packages/qr_flutter
+
+
+** TODO Update ticket
+** TODO Save to  DB
+** TODO Manual Save
+
+* TODO Walk-in
+- Copy buyTicket.dart ?
+- Save to diffirent
+
+
+* TODO History
+** TODO View conductor history
+*** TODO online
+*** TODO Walk-in

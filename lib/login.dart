@@ -53,6 +53,10 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Spacer(),
+                Icon(
+                  Icons.directions_bus_filled_sharp,
+                  size: 200,
+                ),
                 Text(
                   'Bus Ticketing',
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -96,6 +100,11 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
                 Spacer(),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/conductor/login');
+                    },
+                    child: Text('CONDUCTOR'))
               ],
             ))));
   }

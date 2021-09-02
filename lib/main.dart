@@ -1,3 +1,5 @@
+import 'package:busticket/conductor/home.dart';
+import 'package:busticket/conductor/login.dart';
 import 'package:busticket/dashboard.dart';
 import 'package:busticket/payment.dart';
 import 'package:busticket/verify.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
         '/verify': (context) => VerifyPage(),
         '/payment': (context) => PaymentPage(),
 
+        '/conductor/login': (context) => LoginConductorPage(),
+        '/conductor/home': (context) => HomeConductorPage(),
         // '/payment': (context)
       },
       home: LoginPage(),
