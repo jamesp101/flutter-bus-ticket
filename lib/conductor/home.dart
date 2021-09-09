@@ -1,4 +1,9 @@
+import 'package:busticket/conductor/condhistory.dart';
+import 'package:busticket/conductor/scan.dart';
+import 'package:busticket/conductor/walkin.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class HomeConductorPage extends StatefulWidget {
   HomeConductorPage({Key? key}) : super(key: key);
@@ -9,6 +14,8 @@ class HomeConductorPage extends StatefulWidget {
 
 class _HomePageState extends State<HomeConductorPage> {
   PageController _pageController = PageController(initialPage: 0);
+
+  final _emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +26,13 @@ class _HomePageState extends State<HomeConductorPage> {
         body: PageView(
           physics: NeverScrollableScrollPhysics(),
           controller: _pageController,
-          children: [dashboard()],
+          children: [
+            dashboard(),
+            ScanPage(),
+            manual(),
+            WalkInPage(),
+            ConductorHistory()
+          ],
         ));
   }
 
@@ -30,27 +43,43 @@ class _HomePageState extends State<HomeConductorPage> {
       children: [
         ListTile(
           title: Text('Dashboard'),
-          onTap: () {},
+          onTap: () {
+            setState(() {
+              _pageController.jumpToPage(0);
+            });
+          },
         ),
         ListTile(
           title: Text('Scan'),
-          onTap: () {},
+          onTap: () {
+            setState(() {
+              _pageController.jumpToPage(1);
+            });
+          },
         ),
         ListTile(
           title: Text('Walk-in'),
-          onTap: () {},
-        ),
-        ListTile(
-          title: Text('Manual'),
-          onTap: () {},
+          onTap: () {
+            setState(() {
+              _pageController.jumpToPage(3);
+            });
+          },
         ),
         ListTile(
           title: Text('History'),
-          onTap: () {},
+          onTap: () {
+            setState(() {
+              _pageController.jumpToPage(4);
+            });
+          },
         ),
         ListTile(
           title: Text('Logout'),
-          onTap: () {},
+          onTap: () {
+            setState(() {
+              Navigator.pushReplacementNamed(context, '/login');
+            });
+          },
         ),
       ],
     ));
@@ -67,25 +96,25 @@ class _HomePageState extends State<HomeConductorPage> {
             width: double.infinity,
             height: 30,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  _pageController.jumpToPage(1);
+                });
+              },
               child: Text('SCAN'),
             ),
           ),
           SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            height: 30,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text('MANUAL'),
-            ),
-          ),
           SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             height: 30,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  _pageController.jumpToPage(3);
+                });
+              },
               child: Text('WALK IN'),
             ),
           ),
@@ -94,7 +123,11 @@ class _HomePageState extends State<HomeConductorPage> {
             width: double.infinity,
             height: 30,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  _pageController.jumpToPage(4);
+                });
+              },
               child: Text('HISTORY'),
             ),
           ),
@@ -103,12 +136,45 @@ class _HomePageState extends State<HomeConductorPage> {
             width: double.infinity,
             height: 30,
             child: ElevatedButton(
-              onPressed: () {},
-              child: Text('LOGOUT'),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              child: Text('Logout'),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget manual() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      TextFormField(
+          controller: _emailController,
+          decoration: InputDecoration(
+            labelText: 'Code',
+            border: OutlineInputBorder(),
+          )),
+      ElevatedButton(
+        onPressed: () {
+          updateTicket();
+        },
+        child: Text('Find'),
+      )
+    ]);
+  }
+
+  updateTicket() async {
+    EasyLoading.show(status: 'Loading');
+    FirebaseFirestore.instance
+        .collection('tickets')
+        .doc(_emailController.text.toString())
+        .update({'status': 'Used'}).then((value) {
+      EasyLoading.dismiss();
+      EasyLoading.showSuccess('Succesfull');
+    }).catchError((error) {
+      EasyLoading.dismiss();
+      EasyLoading.showSuccess('Succesfull');
+    });
   }
 }

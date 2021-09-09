@@ -66,7 +66,9 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
         ListTile(
           title: Text("Logout"),
-          onTap: () {},
+          onTap: () {
+            Navigator.pushReplacementNamed(context, '/login');
+          },
         ),
       ],
     ));
