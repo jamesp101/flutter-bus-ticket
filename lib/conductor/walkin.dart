@@ -309,13 +309,17 @@ class _WalkInPage extends State<WalkInPage> {
     var x = await FirebaseFirestore.instance.collection('routes').get();
     print('xxxxx');
     x.docs.forEach((DocumentSnapshot element) async {
-      print(await element['from']);
-      this.routes.add(BusRoute(
-            id: element.id,
-            from: element['from'].id.toString(),
-            to: element['to'].id.toString(),
-            price: element['price'],
-          ));
+      try{
+        this.routes.add(BusRoute(
+              id: element.id,
+              from: element['from'].id.toString(),
+              to: element['to'].id.toString(),
+              price: element['price'],
+            ));
+
+      }on StateError{
+
+      }
     });
   }
 

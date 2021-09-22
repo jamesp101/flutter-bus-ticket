@@ -46,6 +46,7 @@ class _HomePageState extends State<HomeConductorPage> {
           onTap: () {
             setState(() {
               _pageController.jumpToPage(0);
+              Navigator.pop(context);
             });
           },
         ),
@@ -53,7 +54,9 @@ class _HomePageState extends State<HomeConductorPage> {
           title: Text('Scan'),
           onTap: () {
             setState(() {
+
               _pageController.jumpToPage(1);
+              Navigator.pop(context);
             });
           },
         ),
@@ -62,6 +65,7 @@ class _HomePageState extends State<HomeConductorPage> {
           onTap: () {
             setState(() {
               _pageController.jumpToPage(3);
+              Navigator.pop(context);
             });
           },
         ),
@@ -70,6 +74,7 @@ class _HomePageState extends State<HomeConductorPage> {
           onTap: () {
             setState(() {
               _pageController.jumpToPage(4);
+              Navigator.pop(context);
             });
           },
         ),

@@ -150,11 +150,10 @@ class _ScanPageState extends State<ScanPage> {
     }
 
     if (ticket.data()!['status'] == 'Used') {
-      EasyLoading.showError('Success');
+      EasyLoading.showError('Ticket is already used');
       return false;
     } else {
-      EasyLoading.showSuccess('Ticket is already used');
-      return false;
+      return true;
     }
   }
 

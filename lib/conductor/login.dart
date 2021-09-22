@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class LoginConductorPage extends StatefulWidget {
   LoginConductorPage({Key? key}) : super(key: key);
@@ -52,7 +54,20 @@ class _LoginPageState extends State<LoginConductorPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+
+                  EasyLoading.show(status: "Logging in");
+                  var x = await FirebaseFirestore.instance
+                      .collection('conductor')
+                      .where('username', isEqualTo: emailController.text)
+                      .where('password', isEqualTo: passwordController.text)
+                      .get();
+
+                  if (x.size == 0){
+                    EasyLoading.showError("Username or password not found");
+                    return;
+                  }
+                  EasyLoading.dismiss();
                   Navigator.pushNamed(context, '/conductor/home');
                 },
                 child: Text('LOGIN'),
