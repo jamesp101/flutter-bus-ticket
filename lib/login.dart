@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class LoginPage extends StatefulWidget {
@@ -53,9 +54,21 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Spacer(),
-                Icon(
-                  Icons.directions_bus_filled_sharp,
-                  size: 200,
+                ShaderMask(
+                  shaderCallback: (bounds) => RadialGradient(
+                          center: Alignment.bottomRight,
+                          radius: 0.5,
+                          colors: [
+                            Theme.of(context).accentColor,
+                            Theme.of(context).primaryColor,
+                          ],
+                          tileMode: TileMode.mirror)
+                      .createShader(bounds),
+                  child: Icon(
+                    Icons.directions_bus_filled_rounded,
+                    size: 150,
+                    color: Colors.white,
+                  ),
                 ),
                 Text(
                   'Bus Ticketing',

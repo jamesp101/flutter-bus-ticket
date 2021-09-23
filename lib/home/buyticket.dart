@@ -49,23 +49,46 @@ class BuyTicket extends State<BuyTicketPage> {
       child: Column(
         children: [
           Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [fromWidget(), toWidget()],
-          ),
+          Card(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 16.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [fromWidget(), toWidget()],
+                ),
+
+                Text(
+                  '$routeError',
+                  style: TextStyle(
+                      color: Color.fromRGBO(255, 0, 0, 1), fontWeight: FontWeight.w300),
+                ),
+
+                routePrice(),
+                SizedBox(
+                  height: 16.0,
+                ),
+                Divider(),
+                Text('Passengers'),
+                passengers(),
+              ],
+            ),
+          )),
           SizedBox(
             height: 24,
           ),
-          routePrice(),
           SizedBox(height: 32),
-          Text('Passengers'),
-          passengers(),
           Spacer(),
           total(),
           Spacer(),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            ElevatedButton(
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton(
               child: Text('PURCHASE'),
               onPressed: () {
                 if (myRoute.id == "") {
@@ -81,85 +104,83 @@ class BuyTicket extends State<BuyTicketPage> {
                                 route: myRoute,
                                 total: _total,
                                 passengers: _passengers,
-                                email: FirebaseAuth
-                                    .instance.currentUser!.email!))));
+                                email:
+                                    FirebaseAuth.instance.currentUser!.email!))));
               },
-            )
-          ]),
+            ),
+          )
         ],
       ),
     );
   }
 
   Widget fromWidget() {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text('STARTING'),
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              _fromVal.name,
-              style: TextStyle(fontWeight: FontWeight.w300),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            ElevatedButton(
-              child: Text('SELECT'),
-              onPressed: () {
-                setState(() {
-                  setFrom();
-                  checkRoute();
-                });
-              },
-            )
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          'FROM',
+          style: TextStyle(fontWeight: FontWeight.w900),
         ),
-      ),
+        SizedBox(
+          height: 16,
+        ),
+        Text(
+          _fromVal.name,
+          style: TextStyle(fontWeight: FontWeight.w300),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        TextButton(
+          child: Text('SELECT'),
+          onPressed: () {
+            setState(() {
+              setFrom();
+              checkRoute();
+            });
+          },
+        )
+      ],
     );
   }
 
   Widget toWidget() {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text('DESTINATION'),
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              _toVal.name,
-              style: TextStyle(fontWeight: FontWeight.w300),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            destButton(),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text('TO', style: TextStyle(fontWeight: FontWeight.w900)),
+        SizedBox(
+          height: 16,
         ),
-      ),
+        Text(
+          _toVal.name,
+          style: TextStyle(fontWeight: FontWeight.w300),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        destButton(),
+      ],
     );
   }
 
   Widget destButton() {
     if (_fromVal.id == '') {
-      return ElevatedButton(
-        child: Text('SELECT'),
+      return TextButton(
+        child: Text(
+          'SELECT',
+        ),
         onPressed: () {},
-        style: ButtonStyle(),
+        style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.resolveWith((states) => 
+            Theme.of(context).colorScheme.primary.withOpacity(0.5)
+          )
+        )
+        
       );
     }
-    return ElevatedButton(
+    return TextButton(
       child: Text('SELECT'),
       onPressed: () {
         setState(() {
@@ -268,22 +289,18 @@ class BuyTicket extends State<BuyTicketPage> {
   }
 
   Widget routePrice() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          '$routeError',
-          style: TextStyle(
-              color: Color.fromRGBO(255, 0, 0, 1), fontWeight: FontWeight.w300),
-        ),
-        SizedBox(height: 32),
-        Text('Route Price'),
-        Text(
-          'P ${NumberFormat("#,##0.00", "en_US").format(_routePrice)}',
-          style: TextStyle(fontSize: 24),
-        ),
-      ],
-    );
+    return 
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 32),
+            Text('Route Price'),
+            Text(
+              'P ${NumberFormat("#,##0.00", "en_US").format(_routePrice)}',
+              style: TextStyle(fontSize: 24),
+            ),
+          ],
+        );
   }
 
   Widget mult() {

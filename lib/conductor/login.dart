@@ -36,10 +36,11 @@ class _LoginPageState extends State<LoginConductorPage> {
             TextFormField(
               controller: emailController,
               decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: 'Username',
                   border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email)),
+                  prefixIcon: Icon(Icons.person)),
             ),
+            SizedBox(height: 10),
             TextFormField(
               controller: passwordController,
               decoration: InputDecoration(

@@ -25,7 +25,8 @@ class _MyTicketsState extends State<MyTicketsPage> {
     tickets = [];
     var x = await firebaseTicket
         .where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email)
-        .get();
+        .orderBy('date', )
+        .get() ;
 
     var e = await Future.forEach(x.docs, (dynamic element) async {
       var from1 = await element.data().routeid.get();
@@ -59,15 +60,7 @@ class _MyTicketsState extends State<MyTicketsPage> {
       child: FutureBuilder(
         future: loadTickets(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasData) {
-            return listTickets();
-          } else {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [Text('Loading')],
-            );
-          }
+
           if (snapshot.hasError) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -75,17 +68,31 @@ class _MyTicketsState extends State<MyTicketsPage> {
               children: [Text('Something went wrong.')],
             );
           }
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [Text('No Data')],
-          );
+
+
+          if (snapshot.hasData) {
+            return 
+            listTickets();
+          } else {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [Text('Loading')],
+            );
+          }
         },
       ),
     );
   }
 
   Widget listTickets() {
+    if (tickets.length == 0){
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children:[ Text("You have no tickets.")],
+      );
+
+    }else
     return ListView.builder(
       itemCount: tickets.length,
       itemBuilder: (context, index) {
