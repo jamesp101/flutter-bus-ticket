@@ -1,9 +1,7 @@
-import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pay/flutter_pay.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '_env.dart';
 import 'home/buyticket.dart';
@@ -67,7 +65,18 @@ class _PaymentPageState extends State<PaymentPage> {
                               style: TextStyle(fontWeight: FontWeight.w300),
                             )
                           ]),
+
                           SizedBox(height: 16),
+                          Divider(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                            Text ('Bus No: ${ticketInfo.bus_no}', style: TextStyle(fontWeight: FontWeight.w300)),
+                            Text ('Departure time: ${ticketInfo.departure_time}', style: TextStyle(fontWeight: FontWeight.w300)),
+                            Text ('Departure date: ${ticketInfo.departure_date}', style: TextStyle(fontWeight: FontWeight.w300)),
+                          ],),
+                          Divider(),
+
                           Divider(),
                           Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -162,7 +171,11 @@ class _PaymentPageState extends State<PaymentPage> {
         total: ticketInfo.total,
         email: ticketInfo.email,
         date: DateTime.now().toString(),
-        status: 'Available');
+        status: 'Available',
+        departure_date: ticketInfo.departure_date,
+        departure_time: ticketInfo.departure_time,
+        bus_no: ticketInfo.bus_no
+        );
 
     await firebaseTicket.add(ticket);
     print('Ticket: $ticket');
@@ -179,10 +192,17 @@ class TicketInfo {
       num passengers = 0,
       num total = 0,
       String email = "",
-      String date = ""}) {
+      String date = "",
+      String departure_time="",
+      String departure_date="",
+      String bus_no = "",
+      }) {
     this.passengers = passengers;
     this.total = total;
     this.email = email;
+    this.departure_time = departure_time;
+    this.departure_date = departure_date;
+    this.bus_no = bus_no;
   }
 
   final route;
@@ -191,13 +211,21 @@ class TicketInfo {
   num total = 0;
   String date = "";
 
+  String departure_time = "";
+  String departure_date =""; 
+  String bus_no = "";
+
   TicketInfo.fromJson(Map<String, Object?> json)
       : this(
             route: json['route']! as BusRoute,
             email: json['email']! as String,
             passengers: json['passengers']! as num,
             total: json['total']! as num,
-            date: json['date']! as String);
+            date: json['date']! as String,
+            departure_time: json['departure_time']! as String,
+            departure_date : json['departure_date']! as String,
+            bus_no : json['departure_date']! as String,
+            );
 }
 
 class FirestoreBusTicket {
@@ -208,6 +236,10 @@ class FirestoreBusTicket {
     this.email,
     this.date,
     this.status,
+    this.departure_time,
+    this.departure_date,
+    this.bus_no,
+    
   });
   final routeid;
   dynamic passengers;
@@ -215,6 +247,9 @@ class FirestoreBusTicket {
   final email;
   final date;
   final status;
+  final departure_time;
+  final departure_date;
+  final bus_no;
 
   FirestoreBusTicket.fromJson(Map<String, Object?> json)
       : this(
@@ -224,6 +259,10 @@ class FirestoreBusTicket {
           email: json['email'] as String,
           date: json['date'] as String,
           status: json['status'] as String,
+          departure_time: json['departure_time']! as String,
+          departure_date : json['departure_date']! as String,
+          bus_no : json['departure_date']! as String,
+
         );
 
   Map<String, Object?> toJson() {
@@ -233,7 +272,10 @@ class FirestoreBusTicket {
       'total': total,
       'email': email,
       'date': date,
-      'status': status
+      'status': status,
+      'departure_time': departure_time,
+      'departure_date': departure_date,
+      'bus_no': bus_no
     };
   }
 }

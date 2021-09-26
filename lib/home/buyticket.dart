@@ -1,8 +1,9 @@
+import 'dart:math';
 import 'dart:ui';
 
+import 'package:busticket/home/seats.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:select_dialog/select_dialog.dart';
@@ -33,6 +34,15 @@ class BuyTicket extends State<BuyTicketPage> {
   num _total = 0.00;
   num _passengers = 1;
 
+  String _datePicked =
+      DateFormat('yyyy-MM-dd').format(DateTime.now()).toString();
+
+  String _timePicked = '8:00 AM';
+  String _busPicked = '2000';
+  var availableSeats = 0;
+
+  var seatLoading = true;
+
   BusRoute myRoute = BusRoute();
 
   @override
@@ -40,6 +50,7 @@ class BuyTicket extends State<BuyTicketPage> {
     super.initState();
     getRoutes();
     loadLocationList();
+    getAvailableSeats();
   }
 
   @override
@@ -54,27 +65,25 @@ class BuyTicket extends State<BuyTicketPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                SizedBox(
-                  height: 16.0,
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [fromWidget(), toWidget()],
                 ),
-
                 Text(
                   '$routeError',
                   style: TextStyle(
-                      color: Color.fromRGBO(255, 0, 0, 1), fontWeight: FontWeight.w300),
+                      color: Color.fromRGBO(255, 0, 0, 1),
+                      fontWeight: FontWeight.w300),
                 ),
-
                 routePrice(),
-                SizedBox(
-                  height: 16.0,
-                ),
                 Divider(),
                 Text('Passengers'),
                 passengers(),
+                Divider(),
+                departureWidget(),
+                SizedBox(height: 1.0),
+                Divider(),
+                busWidget()
               ],
             ),
           )),
@@ -96,22 +105,188 @@ class BuyTicket extends State<BuyTicketPage> {
                   return;
                 }
 
+                if (availableSeats + _passengers > 20) {
+                  EasyLoading.showError('Bus is full');
+                  return;
+                }
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => PaymentPage(
-                            ticket: TicketInfo(
-                                route: myRoute,
-                                total: _total,
-                                passengers: _passengers,
-                                email:
-                                    FirebaseAuth.instance.currentUser!.email!))));
+                                ticket: TicketInfo(
+                              departure_time: _timePicked,
+                              departure_date: _datePicked,
+                              bus_no: _busPicked,
+                              route: myRoute,
+                              total: _total,
+                              passengers: _passengers,
+                              email: FirebaseAuth.instance.currentUser!.email!,
+                            ))));
               },
             ),
           )
         ],
       ),
     );
+  }
+
+  Widget departureWidget() {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        children: [
+          Text('Departure'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                  onPressed: () {
+                    SelectDialog.showModal<String>(context,
+                        label: 'Select Time',
+                        items: [
+                          '1:00 AM',
+                          '2:00 AM',
+                          '3:00 AM',
+                          '4:00 AM',
+                          '5:00 AM',
+                          '6:00 AM',
+                          '7:00 AM',
+                          '8:00 AM',
+                          '9:00 AM',
+                          '10:00 AM',
+                          '11:00 AM',
+                          '12:00 PM',
+                          '1:00 PM',
+                          '2:00 PM',
+                          '3:00 PM',
+                          '4:00 PM',
+                          '5:00 PM',
+                          '6:00 PM',
+                          '7:00 PM',
+                          '8:00 PM',
+                          '9:00 PM',
+                          '10:00 PM',
+                          '11:00 PM',
+                          '12:00 AM',
+                        ], onChange: (String selected) {
+                      setState(() {
+                        _timePicked = selected;
+                        getAvailableSeats();
+                      });
+                    });
+                  },
+                  child: Text(_timePicked)),
+              TextButton(
+                  onPressed: () async {
+                    var p = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.parse(_datePicked),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(Duration(days: 60)));
+
+                    setState(() {
+                      _datePicked =
+                          DateFormat('yyyy-MM-dd').format(p!).toString();
+                      getAvailableSeats();
+                    });
+                  },
+                  child: Text(_datePicked)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget busWidget() {
+    return SizedBox(
+        width: double.infinity,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [
+                Text('Select Bus'),
+                TextButton(
+                    onPressed: () {
+                      SelectDialog.showModal<String>(context,
+                          label: 'Select Bus',
+                          items: [
+                            '2000',
+                            '2001',
+                            '2002',
+                            '2003',
+                          ], onChange: (String selected) {
+                        setState(() {
+                          _busPicked = selected;
+                          getAvailableSeats();
+                        });
+                      });
+                    },
+                    child: Text(_busPicked))
+              ],
+            ),
+            Column(
+              children: [
+                Text('Seats'),
+                TextButton(
+                    onPressed: () {
+                      if (seatLoading){
+                        return;
+                      }
+
+                      Map<String, dynamic> query = {
+                        'departure_time': _timePicked,
+                        'departure_date': _datePicked,
+                        'bus_no': _busPicked
+                      };
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Seats(
+                              query: query
+                            )  ));
+
+                    },
+                    child: (seatLoading)
+                        ? Text('Loading')
+                        : Text('$availableSeats/20',
+                            style: TextStyle(
+                                color: (availableSeats == 20)
+                                    ? Colors.red
+                                    : Theme.of(context).primaryColor)))
+              ],
+            )
+          ],
+        ));
+  }
+
+  Future getAvailableSeats() async {
+    setState(() {
+      seatLoading = true;
+    });
+    availableSeats = 0;
+
+    FirebaseFirestore.instance
+        .collection('tickets')
+        .where('departure_date', isEqualTo: _datePicked)
+        .where('departure_time', isEqualTo: _timePicked)
+        .where('bus_no', isEqualTo: _busPicked)
+        .get()
+        .then((QuerySnapshot value) {
+      value.docs.forEach((element) {
+        availableSeats += element['passengers'] as int;
+      });
+
+      setState(() {
+        availableSeats = availableSeats;
+        seatLoading = false;
+        print('$availableSeats:Available Seats');
+        print('$_datePicked:DatePicked');
+      });
+    });
   }
 
   Widget fromWidget() {
@@ -168,17 +343,13 @@ class BuyTicket extends State<BuyTicketPage> {
   Widget destButton() {
     if (_fromVal.id == '') {
       return TextButton(
-        child: Text(
-          'SELECT',
-        ),
-        onPressed: () {},
-        style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.resolveWith((states) => 
-            Theme.of(context).colorScheme.primary.withOpacity(0.5)
-          )
-        )
-        
-      );
+          child: Text(
+            'SELECT',
+          ),
+          onPressed: () {},
+          style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.resolveWith((states) =>
+                  Theme.of(context).colorScheme.primary.withOpacity(0.5))));
     }
     return TextButton(
       child: Text('SELECT'),
@@ -289,18 +460,17 @@ class BuyTicket extends State<BuyTicketPage> {
   }
 
   Widget routePrice() {
-    return 
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 32),
-            Text('Route Price'),
-            Text(
-              'P ${NumberFormat("#,##0.00", "en_US").format(_routePrice)}',
-              style: TextStyle(fontSize: 24),
-            ),
-          ],
-        );
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(height: 32),
+        Text('Route Price'),
+        Text(
+          'P ${NumberFormat("#,##0.00", "en_US").format(_routePrice)}',
+          style: TextStyle(fontSize: 24),
+        ),
+      ],
+    );
   }
 
   Widget mult() {

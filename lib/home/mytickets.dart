@@ -43,11 +43,15 @@ class _MyTicketsState extends State<MyTicketsPage> {
           'id': element.data().routeid.id,
           'from': from['name'],
           'to': to['name']
+
         },
         passengers: element.data().passengers,
         total: element.data().total,
         date: element.data().date,
         status: element.data().status,
+        departure_time: element.data().departure_time,
+        departure_date: element.data().departure_date,
+        bus_no: element.data().bus_no
       ));
     });
     return x;
@@ -144,6 +148,14 @@ class _MyTicketsState extends State<MyTicketsPage> {
                     ],
                   ),
                   Divider(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text('Bus No:           ${tickets[index].bus_no}'),
+                      Text('Departure Time:   ${tickets[index].departure_time}'),
+                      Text('Departure Date:   ${tickets[index].departure_date}'),
+                    ],
+                  ),
                   SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

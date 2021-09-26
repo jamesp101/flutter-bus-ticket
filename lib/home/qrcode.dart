@@ -39,7 +39,7 @@ class _QRCodeState extends State<StatefulWidget> {
               children: [
                 QrImage(
                   data: ticketInfo.routeid['ticketid'],
-                  size: 300,
+                  size: 200,
                 ),
               ],
             ),
@@ -80,6 +80,16 @@ class _QRCodeState extends State<StatefulWidget> {
                 ),
               ],
             ),
+            Divider(),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text('Bus No:           ${ticketInfo.bus_no}'),
+                    Text('Departure Time:   ${ticketInfo.departure_time}'),
+                    Text('Departure Date:   ${ticketInfo.departure_date}'),
+                  ],
+                ),
             Divider(),
             SizedBox(height: 16),
             Row(
