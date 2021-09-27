@@ -57,27 +57,19 @@ class _MyTicketsState extends State<ConductorHistory> {
       child: FutureBuilder(
         future: loadTickets(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasData) {
-            return listTickets();
-          } else {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [Text('Loading')],
-            );
-          }
-          if (snapshot.hasError) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [Text('Something went wrong.')],
-            );
-          }
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [Text('No Data')],
-          );
+
+              if (snapshot.hasError) {
+                return Text('Something went wrong');
+              }
+
+              if (snapshot.data!.size == 0) {
+                return Text('No tickets found');
+              }
+
+              if (snapshot.connectionState == ConnectionState.done) {
+                return listTickets();
+              }
+              return Text('Loading');
         },
       ),
     );

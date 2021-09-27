@@ -1,5 +1,6 @@
 import 'package:busticket/conductor/condhistory.dart';
 import 'package:busticket/conductor/scan.dart';
+import 'package:busticket/conductor/scan_history.dart';
 import 'package:busticket/conductor/walkin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,8 @@ class _HomePageState extends State<HomeConductorPage> {
             ScanPage(),
             manual(),
             WalkInPage(),
-            ConductorHistory()
+            ConductorHistory(),
+            ScanHistory()
           ],
         ));
   }
@@ -60,21 +62,15 @@ class _HomePageState extends State<HomeConductorPage> {
             });
           },
         ),
+
         ListTile(
-          title: Text('Walk-in'),
+          title: Text('Scan History'),
           onTap: () {
             setState(() {
-              _pageController.jumpToPage(3);
-              Navigator.pop(context);
-            });
-          },
-        ),
-        ListTile(
-          title: Text('History'),
-          onTap: () {
-            setState(() {
-              _pageController.jumpToPage(4);
-              Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ScanHistory()          ));
             });
           },
         ),
@@ -110,30 +106,19 @@ class _HomePageState extends State<HomeConductorPage> {
             ),
           ),
           SizedBox(height: 20),
-          SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             height: 30,
             child: ElevatedButton(
               onPressed: () {
                 setState(() {
-                  _pageController.jumpToPage(3);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ScanHistory()          ));
                 });
               },
-              child: Text('WALK IN'),
-            ),
-          ),
-          SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            height: 30,
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _pageController.jumpToPage(4);
-                });
-              },
-              child: Text('HISTORY'),
+              child: Text('SCAN HISTORY'),
             ),
           ),
           Spacer(),
@@ -144,7 +129,7 @@ class _HomePageState extends State<HomeConductorPage> {
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/login');
               },
-              child: Text('Logout'),
+              child: Text('LOGOUT'),
             ),
           ),
         ],
